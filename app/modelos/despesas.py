@@ -15,3 +15,5 @@ class DespesaCriar(DespesaBase):
 class DespesaResponse(DespesaBase):
     id: int
     id_usuario: int
+
+
