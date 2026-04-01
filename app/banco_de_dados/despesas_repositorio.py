@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import date
 from app.banco_de_dados.local import BancoDeDadosLocal
 from app.modelos.despesas import DespesaResponse, DespesaCriar
 
@@ -28,7 +29,7 @@ class DespesasRepositorio:
             cursor = conexao.cursor()
             cursor.execute(
                 "UPDATE despesas SET descricao = ?, valor = ?, categoria = ?, data_despesa= ? WHERE id = ?",
-                (despesa.descricao, despesa.valor, despesa.categoria, despesa.data_despesa,  despesa_id)
+                (despesa.descricao, despesa.valor, despesa.categoria, str(despesa.data_despesa),  despesa_id)
             )
             if cursor.rowcount == 0:
                 return None
@@ -45,10 +46,26 @@ class DespesasRepositorio:
         
 
     #Lógica: Listar despesas.
-    async def listar_despesas(self) -> list[DespesaResponse]:
+    async def listar_despesas(
+        self, 
+        usuario_id: int, 
+        categoria: str | None = None, 
+        data: date | None = None
+    ) -> list[DespesaResponse]:
+        query = "SELECT id, id_usuario, descricao, valor, categoria, data_despesa FROM despesas WHERE id_usuario = ?"
+        params = [usuario_id]
+
+        if categoria:
+            query += " AND categoria = ?"
+            params.append(categoria)
+        
+        if data:
+            query += " AND data_despesa = ?"
+            params.append(str(data))
+
         with self.db.conectar() as conexao:
             cursor = conexao.cursor()
-            cursor.execute("SELECT id, id_usuario, descricao, valor, categoria, data_despesa FROM despesas")
+            cursor.execute(query, params)
             linhas = cursor.fetchall()
             return [
                 DespesaResponse(
@@ -57,7 +74,7 @@ class DespesasRepositorio:
                 ) for l in linhas
             ]
         
-    #Lógica: Busca uma despesa. 
+    #Lógica: Busca uma despesa por id. 
     async def obter_despesa(self, despesa_id: int) -> DespesaResponse | None:
         with self.db.conectar() as conexao:
             cursor = conexao.cursor()
