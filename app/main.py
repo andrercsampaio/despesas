@@ -1,30 +1,41 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
-# import de rotas
-from app.rotas import usuarios_rotas, despesas_rotas
+# Importação das rotas
+from app.rotas import usuarios_rotas, despesas_rotas, auth_web, despesas_web
 
-# dependencias
+# Importação do Middleware
+from app.autenticacao_middleware import AuthenticationToken
 from app.dependencias import banco_de_dados
 
+app = FastAPI(title="Gestão de Despesas")
 
-#app
-app = FastAPI(
-    title="Sistema de Gestão de Despesas",
-    version="1.0.0"
-)
+# 1. Pastas Estáticas e Templates
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/templates")
 
-# Rotas
-app.include_router(usuarios_rotas.router)
-app.include_router(despesas_rotas.router)
+# 2. Middleware de Cookies
+app.add_middleware(AuthenticationToken)
 
+# 3. Registro de Rotas
+app.include_router(auth_web.router)       # Rota web de Login
+app.include_router(despesas_web.router)
+app.include_router(usuarios_rotas.router) # API JSON
+app.include_router(despesas_rotas.router) # API JSON
 
 
 @app.on_event("startup")
 async def ao_iniciar():
-    """Garante a criação das tabelas no SQLite ao subir o servidor."""
     banco_de_dados.inicializar_banco()
-    print("🚀 Infraestrutura de banco de dados pronta.")
+    print("🚀 Servidor Web pronto!")
 
-@app.get("/", tags=["Healthcheck"])
-async def raiz():
-    return {"status": "online", "docs": "/docs"}
+@app.get("/", response_class=HTMLResponse)
+async def raiz(request: Request):
+    # AJUSTE AQUI
+    return templates.TemplateResponse(
+        request=request, 
+        name="index.html",
+        context={"titulo": "Dashboard de Despesas"}
+    )

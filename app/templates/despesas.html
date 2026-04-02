@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Despesas</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="cabecalho-acoes">
+            <h2>Minhas Despesas</h2>
+            <div>
+                <a href="/minhas-despesas/nova" style="margin-right: 15px;">Nova Despesa +</a>
+                <a href="/logout" style="color: #e74c3c;">Sair</a>
+            </div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in despesas %}
+                <tr>
+                    <td>{{ d.data_despesa }}</td>
+                    <td>{{ d.descricao }}</td>
+                    <td>{{ d.categoria }}</td>
+                    <td>R$ {{ "%.2f"|format(d.valor) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center;">Nenhuma despesa cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Usuário</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Criar Conta</h2>
+    {% if erro %}<p style="color:red">{{ erro }}</p>{% endif %}
+    <form action="/registro" method="POST">
+        <label>Usuário:</label><br>
+        <input type="text" name="nome_usuario" required minlength="3"><br><br>
+        <label>Nome Completo:</label><br>
+        <input type="text" name="nome_completo" required minlength="3"><br><br>
+        <label>E-mail:</label><br>
+        <input type="email" name="email" required><br><br>
+        <label>Senha:</label><br>
+        <input type="password" name="senha" required minlength="6"><br><br>
+        <button type="submit">Registrar</button>
+    </form>
+    <a href="/login">Já tenho conta</a>
+</body>
+</html>

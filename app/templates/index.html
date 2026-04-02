@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo | default("Dashboard") }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .cabecalho { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .btn-sair { background-color: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="cabecalho">
+        <h2>Bem-vindo à Gestão de Despesas</h2>
+        <a href="/logout" class="btn-sair">Sair (Logout)</a>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <p>A sua autenticação foi validada com sucesso pelo Middleware.</p>
+        <p>Aqui entraremos futuramente com a listagem das despesas puxadas do seu SQLite.</p>
+    </div>
+</body>
+</html>

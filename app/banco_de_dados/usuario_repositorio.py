@@ -92,3 +92,23 @@ class UsuarioRepositorio:
                     email=linha[3]
                 )
             return None
+        
+    #buscar_usuario_por_email_senha
+    async def buscar_usuario_por_email_senha(self, email: str, senha: str) -> UsuarioResponse | None:
+        with self.db.conectar() as conexao:
+            cursor = conexao.cursor()
+            # Validação simples em texto plano (conforme modelo da Alura)
+            cursor.execute(
+                "SELECT id, nome_usuario, nome_completo, email FROM usuarios WHERE email = ? AND senha = ?", 
+                (email, senha)
+            )
+            linha = cursor.fetchone()
+            
+            if linha:
+                return UsuarioResponse(
+                    id=linha[0],
+                    nome_usuario=linha[1],
+                    nome_completo=linha[2],
+                    email=linha[3]
+                )
+            return None
